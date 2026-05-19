@@ -3,64 +3,68 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="Author" CONTENT="Ho Ngoc Duc">
-<title>Âm lịch - Xuất Chi Tiết Ngày</title>
+<title>Âm lịch - Xuất Chi Tiết Ngày Thành HTML Tĩnh</title>
 <script language="JavaScript" src="amlich-hnd.js" type="text/javascript"></script>
 </head>
-<body style="padding: 20px; font-family: Arial, sans-serif;">
+<body style="padding: 20px; font-family: Arial, sans-serif; background-color: #f9f9f9;">
 
-<h2>Bảng xem trước thông tin chi tiết các ngày trong tháng hiện tại:</h2>
-<div id="preview-container" style="border: 1px solid #ccc; padding: 15px; max-height: 300px; overflow-y: scroll; background: #fafafa;">
+<h2>Bảng xem trước thông tin chi tiết các ngày trong tháng:</h2>
+<div id="preview-container" style="border: 1px solid #ccc; padding: 15px; max-height: 250px; overflow-y: scroll; background: #fff;">
     </div>
 
 <br><hr><br>
 
-<h2>Mã nguồn HTML tĩnh chứa ĐẦY ĐỦ thông tin chi tiết (Copy ở đây):</h2>
-<p style="color: gray;">Mã dưới đây đã bao gồm đầy đủ dữ liệu ngày dương, ngày âm, can chi, tiết khí và giờ hoàng đạo dưới dạng danh sách tĩnh.</p>
+<h2>Mã nguồn HTML tĩnh chứa ĐẦY ĐỦ dữ liệu (Copy trong ô này):</h2>
+<p style="color: green; font-weight: bold;">Chỉ cần copy toàn bộ nội dung trong ô dưới đây dán vào source code trang web của bạn là xong!</p>
 
-<textarea id="static-source" style="width: 100%; height: 400px; font-family: monospace; padding: 10px; box-sizing: border-box;"></textarea>
+<textarea id="static-source" style="width: 100%; height: 400px; font-family: monospace; padding: 10px; box-sizing: border-box; background: #222; color: #fff;"></textarea>
 
 <script language="JavaScript">
-    // 1. Lấy tháng và năm hiện tại giống như cách thư viện lấy
-    getSelectedMonth(); // Hàm này cập nhật biến currentMonth và currentYear toàn cục từ URL hoặc mặc định
+    // 1. Khởi chạy cấu hình tháng và năm lấy từ URL hoặc mặc định tháng hiện tại
+    getSelectedMonth(); 
     
-    // 2. Lấy danh sách tất cả các ngày trong tháng đó dựa trên hàm có sẵn của file .js
+    // 2. Lấy danh sách các ngày trong tháng bằng hàm gốc
     var daysInMonth = getMonth(currentMonth, currentYear); 
     
     var finalHTML = '<div class="lich-chi-tiet-thang">\n';
     finalHTML += '  <h3>Thông tin chi tiết tháng ' + currentMonth + '/' + currentYear + '</h3>\n';
     finalHTML += '  <ul>\n';
 
-    // 3. Vòng lặp duyệt qua từng ngày để ép cấu trúc dữ liệu xuất ra text tĩnh
+    // 3. Vòng lặp bóc tách dữ liệu từng ngày giống hệt Popup Alert gốc
     for (var i = 0; i < daysInMonth.length; i++) {
         var lunarObj = daysInMonth[i];
         
-        // Tính toán ngày dương lịch tương ứng từ số ngày Julian (jd)
+        // Bỏ qua các ô trống đầu/cuối tháng nếu có
+        if (lunarObj.day == 0) continue;
+
+        // Tính toán ngày dương lịch
         var solarDateArr = jdn2date(lunarObj.jd);
         var sDay = solarDateArr[0];
         var sMonth = solarDateArr[1];
         var sYear = solarDateArr[2];
         
-        // Lấy tên Thứ và chuỗi Ngày âm lịch cơ bản
+        // Chuỗi ngày dương + ngày âm (Ví dụ: Thứ ba 19/5/2026 -+- Ngày 3 thàng 4)
         var dayString = getDayString(lunarObj, sDay, sMonth, sYear);
         
-        // Lấy thông tin Can Chi (Ngày, Tháng, Năm)
+        // Lấy thông tin Can Chi (Ngày Quý Tỵ, tháng Quý Tỵ, năm Bính Ngọ)
         var cc = getCanChi(lunarObj);
         var canChiString = "Ngày " + cc[0] + ", tháng " + cc[1] + ", năm " + cc[2];
         
-        // Tính toán Tiết khí
-        var tietKhiIdx = getSunLongitude(lunarObj.jd, 7.0); // 7.0 là múi giờ Việt Nam
+        // Tính Can giờ đầu ngày (Giờ Tý bắt đầu từ Can nào)
+        var canDayIdx = (lunarObj.jd + 9) % 10; // Chỉ số Can của ngày
+        var canHour0Idx = (canDayIdx * 2) % 10; // Công thức tính Can của giờ Tý dựa vào Can ngày
+        var gioDauNgay = CAN[canHour0Idx] + " " + CHI[0]; // Ví dụ: "Nhâm Tý"
+        
+        // Tính toán Tiết khí dựa trên độ kinh mặt trời
+        var tietKhiIdx = getSunLongitude(lunarObj.jd, 7.0); 
         var tietKhiName = TIETKHI[tietKhiIdx];
         
-        // Tính toán Giờ hoàng đạo
-        var gioHDString = getGioHoangDao(lunarObj.jd).replace(/\n/g, ", ");
-        
-        // Lấy Can giờ đầu ngày (Nhâm Tý, Giáp Tý, vv...)
-        var canHour0 = getCanHour0(lunarObj.jd);
-        var gioDauNgay = canHour0 + " " + CHI[0]; // CHI[0] luôn là "Tý"
+        // Lấy chuỗi Giờ hoàng đạo và làm sạch định dạng dấu phẩy xuống dòng
+        var gioHDString = getGioHoangDao(lunarObj.jd).replace(/\n/g, "").replace(/, \s*$/, "");
 
-        // Gộp tất cả thông tin lại thành 1 đoạn HTML tĩnh sạch sẽ
-        finalHTML += '    <li style="margin-bottom: 15px; list-style-type: none; border-bottom: 1px dashed #eee; padding-bottom: 10px;">\n';
-        finalHTML += '      <strong>' + dayString + '</strong><br>\n';
+        // Đóng gói cấu trúc HTML tĩnh sạch sẽ chứa toàn bộ chữ
+        finalHTML += '    <li style="margin-bottom: 15px; list-style-type: none; border-bottom: 1px dashed #ccc; padding-bottom: 10px;">\n';
+        finalHTML += '      <strong>' + dayString + ' âm lịch</strong><br>\n';
         finalHTML += '      <span>' + canChiString + '</span><br>\n';
         finalHTML += '      <span>Giờ đầu ngày: ' + gioDauNgay + '</span><br>\n';
         finalHTML += '      <span>Tiết: ' + tietKhiName + '</span><br>\n';
@@ -71,7 +75,7 @@
     finalHTML += '  </ul>\n';
     finalHTML += '</div>';
 
-    // 4. Đẩy kết quả ra màn hình giao diện và ô textarea để copy
+    // 4. Xuất kết quả thẳng ra giao diện và ô Textarea để bạn sao chép dữ liệu chữ
     document.getElementById("preview-container").innerHTML = finalHTML;
     document.getElementById("static-source").value = finalHTML;
 </script>
