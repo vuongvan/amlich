@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <script language="JavaScript" src="amlich-hnd.js" type="text/javascript"></script>
+</head>
+<body>
+<div id="rainmeter-data"></div>
+
+<script language="JavaScript">
+    // Tự động lấy ngày hôm nay
+    var targetDate = new Date();
+    var lDate = getLunarDate(targetDate.getDate(), targetDate.getMonth()+1, targetDate.getFullYear());
+    
+    var sDay = targetDate.getDate();
+    var sMonth = targetDate.getMonth()+1;
+    var sYear = targetDate.getFullYear();
+    
+    var dayString = getDayString(lDate, sDay, sMonth, sYear);
+    var cc = getCanChi(lDate);
+    var canChiString = "Ngày " + cc[0] + ", tháng " + cc[1] + ", năm " + cc[2];
+    
+    var canDayIdx = (lDate.jd + 9) % 10;
+    var canHour0Idx = (canDayIdx * 2) % 10;
+    var gioDauNgay = CAN[canHour0Idx] + " " + CHI[0];
+    
+    var tietKhiIdx = getSunLongitude(lDate.jd, 7.0);
+    var tietKhiName = TIETKHI[tietKhiIdx];
+    
+    var gioHDString = getGioHoangDao(lDate.jd).replace(/\n/g, ", ").replace(/, \s*$/, "");
+
+    // Định dạng chuỗi thô có tag rõ ràng để Rainmeter RegExp dễ bóc tách
+    var rawText = "{DUONGLICH}" + sDay + "/" + sMonth + "/" + sYear + "{/DUONGLICH}" +
+                  "{THU}" + dayString.split(" ")[0] + " " + dayString.split(" ")[1] + "{/THU}" +
+                  "{AMLICH}Ngày " + lDate.day + " tháng " + lDate.month + (lDate.leap==1?" nhuận":"") + "{/AMLICH}" +
+                  "{CANCHI}" + canChiString + "{/CANCHI}" +
+                  "{GIODAUNGAY}" + gioDauNgay + "{/GIODAUNGAY}" +
+                  "{TIETKHI}" + tietKhiName + "{/TIETKHI}" +
+                  "{HOANGDAO}" + gioHDString + "{/HOANGDAO}";
+
+    // Ghi đè thẳng vào body để khi View Source/WebParser đọc là thấy text ngay lập tức
+    document.body.innerHTML = rawText;
+</script>
+</body>
+</html>
