@@ -15,7 +15,8 @@
             <div id="calendar-container">
                 <script language="JavaScript">
                     setOutputSize("big");
-                    document.writeln(printSelectedMonth());
+                    // ĐÃ SỬA: Thay đổi cách xuất để giữ code lại trong container
+                    document.getElementById("calendar-container").innerHTML = printSelectedMonth();
                 </script>
             </div>
         </td>
@@ -30,8 +31,7 @@
 <textarea id="static-source" style="width: 100%; height: 350px; font-family: monospace; padding: 10px; box-sizing: border-box;"></textarea>
 
 <script language="JavaScript">
-    // Đoạn code này lấy HTML đã được tạo ra bởi hàm printSelectedMonth() 
-    // và hiển thị trực tiếp vào ô văn bản để bạn lấy source dễ dàng
+    // Lấy nội dung bên trong container và đẩy vào ô textarea
     var calendarHTML = document.getElementById("calendar-container").innerHTML;
     document.getElementById("static-source").value = calendarHTML.trim();
 </script>
