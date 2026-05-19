@@ -1,32 +1,40 @@
-
+<!DOCTYPE html>
 <html>
 <head>
-<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=UTF-8">
-<META NAME="Author" CONTENT="Ho Ngoc Duc">
-<title>Âm lịch</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="Author" CONTENT="Ho Ngoc Duc">
+<title>Âm lịch - Xuất HTML Tĩnh</title>
 <script language="JavaScript" src="amlich-hnd.js" type="text/javascript"></script>
 </head>
-<BODY marginwidth="0" marginheight="0" topmargin="0" leftmargin="0">
+<body marginwidth="0" marginheight="0" topmargin="0" leftmargin="0" style="padding: 20px; font-family: Arial, sans-serif;">
 
+<h2>Cuốn lịch hiển thị trên giao diện:</h2>
 <table align="center" cellspacing="1" border="0">
-
-<tr>
-<td align="center">
-<br /><br /><br />
-<script language="JavaScript">
-<!--
-	setOutputSize("big");
-	document.writeln(printSelectedMonth());
-//-->
-
-</script>
-
-</td>
-</tr>
-
-
-
+    <tr>
+        <td align="center">
+            <div id="calendar-container">
+                <script language="JavaScript">
+                    setOutputSize("big");
+                    document.writeln(printSelectedMonth());
+                </script>
+            </div>
+        </td>
+    </tr>
 </table>
+
+<br><hr><br>
+
+<h2>Mã nguồn HTML tĩnh chứa đầy đủ ngày tháng (Copy ở đây):</h2>
+<p style="color: gray;">Bạn chỉ cần copy toàn bộ đoạn mã trong ô dưới đây dán vào file HTML của bạn là sẽ có lịch tĩnh hiển thị ngay lập tức mà không cần chạy code JavaScript sinh lịch nữa.</p>
+
+<textarea id="static-source" style="width: 100%; height: 350px; font-family: monospace; padding: 10px; box-sizing: border-box;"></textarea>
+
+<script language="JavaScript">
+    // Đoạn code này lấy HTML đã được tạo ra bởi hàm printSelectedMonth() 
+    // và hiển thị trực tiếp vào ô văn bản để bạn lấy source dễ dàng
+    var calendarHTML = document.getElementById("calendar-container").innerHTML;
+    document.getElementById("static-source").value = calendarHTML.trim();
+</script>
 
 </body>
 </html>
